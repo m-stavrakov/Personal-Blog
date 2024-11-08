@@ -96,6 +96,7 @@ class Post(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True, blank=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True)
     title = models.CharField(max_length=100)
+    tags = models.CharField(max_length=100, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     image = models.FileField(upload_to="image", null=True, blank=True)
     status = models.CharField(choices=STATUS, max_length=100, default="Active")
@@ -122,6 +123,10 @@ class Post(models.Model):
             # yt is added by shortuuid
 
         super(Post, self).save(*args, **kwargs)
+
+    def comments(self):
+        # getting all the comments relate to this post
+        return Comment.objects.filter(post=self)
 
 
 class Comment(models.Model):
