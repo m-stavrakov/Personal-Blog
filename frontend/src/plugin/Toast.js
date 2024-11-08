@@ -12,7 +12,7 @@ function Toast(icon, title) {
     return Toast.fire({
         icon: icon,
         title: title,
-        text: text,
+        // text: text,
     });
 }
 

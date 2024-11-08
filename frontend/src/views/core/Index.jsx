@@ -144,8 +144,8 @@ function Index() {
                                 <h2>Categories</h2>
                             </div>
                             <div className="d-flex flex-wrap justify-content-between">
-                                {category?.map((c) => (
-                                    <div className="mt-2">
+                                {category?.map((c, index) => (
+                                    <div key={index} className="mt-2">
                                         <div className="card bg-transparent">
                                             <img className="card-img" src={c.image} style={{ width: "150px", height: "80px", objectFit: "cover" }} alt="card image" />
                                             <div className="d-flex flex-column align-items-center mt-3 pb-2">
