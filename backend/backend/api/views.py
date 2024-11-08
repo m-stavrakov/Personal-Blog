@@ -72,7 +72,7 @@ class PostListAPIView(generics.ListAPIView):
     permission_classes = [AllowAny]
 
     def get_queryset(self):
-        return api_models.Post.objects.filter(status="Active")
+        return api_models.Post.objects.filter(status="Active").order_by("view")
     
 class PostDetailAPIView(generics.RetrieveAPIView):
     serializer_class = api_serializer.PostSerializer
