@@ -61,6 +61,33 @@ function Detail() {
             email: "",
             comment: "",
         });
+    };
+
+    const handleLikePost = async () => {
+        // the json will be sending data to the backend in this case the user that liked the post and the post that was liked
+        const json = {
+            user_id: 1,
+            post_id: post?.id,
+        };
+
+        const response = await apiInstance.post('post/like-post/', json);
+        console.log(response.data);
+        // gets the message from LikePostAPIView which is easier as we have two different in this case
+        Toast("success", response.data.message);
+        // this will show the like immediately instead of having to reload the page
+        fetchPost();
+    };
+
+    const handleBookmarkPost = async () => {
+        const json = {
+            user_id: 1,
+            post_id: post?.id,
+        };
+
+        const response = await apiInstance.post('post/bookmark-post/', json);
+        console.log(response.data);
+        Toast("success", response.data.message);
+        fetchPost();
     }
 
     return (
@@ -125,6 +152,15 @@ function Detail() {
                                         </li>
                                     ))}
                                 </ul>
+
+                                <button onClick={handleLikePost} className="btn btn-success">
+                                    <i className="fas fa-thumbs-up me-2"></i>
+                                    {post?.likes?.length}
+                                </button>
+
+                                <button onClick={handleBookmarkPost} className="btn btn-warning ms-2">
+                                    <i className="fas fa-bookmark text-white"></i>
+                                </button>
                             </div>
                         </div>
                         {/* Left sidebar END */}
