@@ -1,9 +1,53 @@
 import React from "react";
 import Header from "../partials/Header";
 import Footer from "../partials/Footer";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuthStore } from '../../store/auth';
+import { register } from '../../utils/auth';
+import { useState } from "react";
 
 function Register() {
+
+    const [bioData, setBioData] = useState({full_name: '', email: '', password: '', password2: ''});
+    const [isLoading, setIsLoading] = useState(false);
+    // USED TO REDIRECT
+    const navigate = useNavigate();
+
+    const handleBioDataChange = (event) => {
+        setBioData({
+            ...bioData,
+            [event.target.name]: event.target.value,
+        });
+    };
+
+    // RESETS THE FORM IN CASE OF AN ERROR 
+    const resetForm = () => {
+        setBioData({
+            full_name: '', 
+            email: '',
+            password: '',
+            password2: '',
+        });
+    };
+
+    const handleRegister = async (e) => {
+        e.preventDefault();
+        setIsLoading(true);
+
+        const {error} = register(bioData.full_name, bioData.email, bioData.password, bioData.password2);
+        if (error){
+            alert(JSON.stringify(error));
+            resetForm();
+        }else {
+            // in the register function the user is automatically loggedin after registering 
+            // if you want to make to user login after registering remove the await login() from register
+            //after removing it do navigate("/login/")
+            navigate("/");
+        };
+
+        setIsLoading(false);
+    };
+
     return (
         <>
             <Header />
@@ -22,19 +66,19 @@ function Register() {
                                     </span>
                                 </div>
                                 {/* Form */}
-                                <form className="needs-validation" noValidate="">
+                                <form onSubmit={handleRegister} className="needs-validation" noValidate="">
                                     {/* Username */}
                                     <div className="mb-3">
                                         <label htmlFor="email" className="form-label">
                                             Full Name
                                         </label>
-                                        <input type="text" id="full_name" className="form-control" name="full_name" placeholder="John Doe" required="" />
+                                        <input onChange={handleBioDataChange} value={bioData.full_name} type="text" id="full_name" className="form-control" name="full_name" placeholder="John Doe" required="" />
                                     </div>
                                     <div className="mb-3">
                                         <label htmlFor="email" className="form-label">
                                             Email Address
                                         </label>
-                                        <input type="email" id="email" className="form-control" name="email" placeholder="johndoe@gmail.com" required="" />
+                                        <input onChange={handleBioDataChange} value={bioData.email} type="email" id="email" className="form-control" name="email" placeholder="johndoe@gmail.com" required="" />
                                     </div>
 
                                     {/* Password */}
@@ -42,19 +86,24 @@ function Register() {
                                         <label htmlFor="password" className="form-label">
                                             Password
                                         </label>
-                                        <input type="password" id="password" className="form-control" name="password" placeholder="**************" required="" />
+                                        <input onChange={handleBioDataChange} value={bioData.password} type="password" id="password" className="form-control" name="password" placeholder="**************" required="" />
                                     </div>
                                     <div className="mb-3">
                                         <label htmlFor="password" className="form-label">
                                             Confirm Password
                                         </label>
-                                        <input type="password" id="password" className="form-control" name="password" placeholder="**************" required="" />
+                                        <input onChange={handleBioDataChange} value={bioData.password2} type="password" id="password2" className="form-control" name="password2" placeholder="**************" required="" />
                                     </div>
                                     <div>
                                         <div className="d-grid">
-                                            <button type="submit" className="btn btn-primary">
-                                                Sign Up <i className="fas fa-user-plus"></i>
-                                            </button>
+                                            {isLoading === true ? 
+                                                    (<button disabled type="submit" className="btn btn-primary">
+                                                        Sign Up <i className="fas fa-spinner fa-spin"></i>
+                                                    </button>) 
+                                                : 
+                                                    (<button type="submit" className="btn btn-primary">
+                                                    Sign Up <i className="fas fa-user-plus"></i>
+                                                    </button>)}
                                         </div>
                                     </div>
                                 </form>

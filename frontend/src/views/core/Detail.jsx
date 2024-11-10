@@ -79,8 +79,6 @@ function Detail() {
     };
 
     const handleBookmarkPost = async () => {
-        const [isBookmarked, setIsBookmarked] = useState(false);
-
         const json = {
             user_id: 1,
             post_id: post?.id,
@@ -90,8 +88,6 @@ function Detail() {
         console.log(response.data);
         Toast("success", response.data.message);
         fetchPost();
-
-        setIsBookmarked(prevState => !prevState);
     };
 
     return (
@@ -163,7 +159,7 @@ function Detail() {
                                 </button>
 
                                 <button onClick={handleBookmarkPost} className="btn btn-warning ms-2">
-                                    <i className={`fas fa-bookmark ${isBookmarked ? 'text-dark' : 'text-white'}`}></i>
+                                    <i className='fas fa-bookmark text-white'></i>
                                 </button>
                             </div>
                         </div>
