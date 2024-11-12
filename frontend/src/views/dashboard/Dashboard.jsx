@@ -2,8 +2,42 @@ import React from "react";
 import Header from "../partials/Header";
 import Footer from "../partials/Footer";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import useUserData from "../../plugin/useUserData";
+import apiInstance from "../../utils/axios";
+import moment from "moment";
+import { useEffect } from "react";
 
 function Dashboard() {
+
+    const [stats, setStats] = useState([]);
+    const [posts, setPosts] = useState([]);
+    const [comments, setComments] = useState([]);
+    const [noti, setNoti] = useState([]);
+
+    const user_id = useUserData()?.user_id;
+
+    const fetchDashboardData = async () => {
+        const stats_response = await apiInstance.get(`author/dashboard/stats/${user_id}/`);
+        setStats(stats_response?.data[0]);
+        // this is how line 21 looks:
+        //{["post": 0]}
+        //usually if we have more data we will have to either loop or map through it however in this case we only have this so [0]
+
+        const post_res = await apiInstance.get(`author/dashboard/post-list/${user_id}/`);
+        setPosts(post_res?.data);
+
+        const comment_res = await apiInstance.get(`author/dashboard/comment-list/${user_id}/`);
+        setComments(comment_res?.data);
+
+        const noti_res = await apiInstance.get(`author/dashboard/noti-list/${user_id}/`);
+        setNoti(noti_res?.data);
+    };
+
+    useEffect(() => {
+        fetchDashboardData();
+    }, [])
+
     return (
         <>
             <Header />
