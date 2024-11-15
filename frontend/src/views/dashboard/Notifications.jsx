@@ -4,7 +4,6 @@ import Footer from "../partials/Footer";
 import { Link } from "react-router-dom";
 import useUserData from "../../plugin/useUserData";
 import apiInstance from "../../utils/axios";
-import moment from "moment";
 import Moment from "../../plugin/Moment";
 import { useState } from "react";
 import { useEffect } from "react";
@@ -68,7 +67,7 @@ function Notifications() {
                                                                             <i className="fas fa-thumbs-up text-danger "></i> New Like
                                                                         </h4>
                                                                         <p className="mt-3">
-                                                                            Someone just liked your post <b>{n?.post.title}</b>
+                                                                            {n?.user.full_name} just liked your post <b>{n?.post.title}</b>
                                                                         </p>
                                                                     </>
                                                                 }
@@ -79,7 +78,7 @@ function Notifications() {
                                                                             <i className="bi bi-chat-left-quote-fill text-success "></i> New Comment
                                                                         </h4>
                                                                         <p className="mt-3">
-                                                                            Someone just commented your post <b>{n?.post.title}</b>
+                                                                            {n?.user.full_name} just commented your post <b>{n?.post.title}</b>
                                                                         </p>
                                                                     </>
                                                                 }
@@ -90,7 +89,7 @@ function Notifications() {
                                                                             <i className="fas fa-bookmark text-warning "></i> New Bookmark
                                                                         </h4>
                                                                         <p className="mt-3">
-                                                                            Someone just bookmarked your post <b>{n?.post.title}</b>
+                                                                            {n?.user.full_name} just bookmarked your post <b>{n?.post.title}</b>
                                                                         </p>
                                                                     </>
                                                                 }
