@@ -14,10 +14,10 @@ function Header() {
                     <Link className="navbar-brand" to="/">
                         <img className="navbar-brand-item dark-mode-item" src="https://i.postimg.cc/ZRNC1mhM/my-main-logo.png" style={{ width: "200px" }} alt="logo" />
                     </Link>
-                    <button className="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                    {/* <button className="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                         <span className="h6 d-none d-sm-inline-block text-white">Menu</span>
                         <span className="navbar-toggler-icon" />
-                    </button>
+                    </button> */}
                     <div className="collapse navbar-collapse" id="navbarCollapse">
                         <div className="nav mt-3 mt-lg-0 px-4 flex-nowrap align-items-center">
                             <div className="nav-item w-100">
@@ -57,48 +57,46 @@ function Header() {
                                     </li>
                                 </ul>
                             </li>
-                            <li className="nav-item dropdown">
-                                <a className="nav-link dropdown-toggle active" href="#" id="pagesMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Dashboard
-                                </a>
-                                <ul className="dropdown-menu" aria-labelledby="pagesMenu">
-                                    <li>
-                                        <Link className="dropdown-item" to="/dashboard/">
-                                            <i className="fas fa-user"></i> Dashboard
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <Link className="dropdown-item" to="/posts/">
-                                            <i className="bi bi-grid-fill"></i> Posts
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <Link className="dropdown-item" to="/add-post/">
-                                            <i className="fas fa-plus-circle"></i> Add Post
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <Link className="dropdown-item" to="/comments/">
-                                            <i className="bi bi-chat-left-quote-fill"></i> Comments
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <Link className="dropdown-item" to="/notifications/">
-                                            <i className="fas fa-bell"></i> Notifications
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <Link className="dropdown-item" to="/profile/">
-                                            <i className="fas fa-user-gear"></i> Profile
-                                        </Link>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li className="nav-item">
+                            {/* <li className="nav-item"> */}
                                 {isLoggedIn() ? (<>
-                                    <Link to={"/dashboard/"} className="btn btn-success" href="dashboard.html">
-                                        Dashboard <i className="fas fa-dashboard"></i>
-                                    </Link>
+                                    <li className="nav-item dropdown">
+                                        <a className="nav-link dropdown-toggle active" href="#" id="pagesMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Dashboard
+                                        </a>
+                                        <ul className="dropdown-menu" aria-labelledby="pagesMenu">
+                                            <li>
+                                                <Link className="dropdown-item" to="/dashboard/">
+                                                    <i className="fas fa-user"></i> Dashboard
+                                                </Link>
+                                            </li>
+                                            <li>
+                                                <Link className="dropdown-item" to="/posts/">
+                                                    <i className="bi bi-grid-fill"></i> Posts
+                                                </Link>
+                                            </li>
+                                            <li>
+                                                <Link className="dropdown-item" to="/add-post/">
+                                                    <i className="fas fa-plus-circle"></i> Add Post
+                                                </Link>
+                                            </li>
+                                            <li>
+                                                <Link className="dropdown-item" to="/comments/">
+                                                    <i className="bi bi-chat-left-quote-fill"></i> Comments
+                                                </Link>
+                                            </li>
+                                            <li>
+                                                <Link className="dropdown-item" to="/notifications/">
+                                                    <i className="fas fa-bell"></i> Notifications
+                                                </Link>
+                                            </li>
+                                            <li>
+                                                <Link className="dropdown-item" to="/profile/">
+                                                    <i className="fas fa-user-gear"></i> Profile
+                                                </Link>
+                                            </li>
+                                        </ul>
+                                    </li>
+
                                     <Link to={"/logout/"} className="btn btn-danger ms-2" href="dashboard.html">
                                         Logout <i className="fas fa-sign-out-alt"></i>
                                     </Link>
@@ -110,7 +108,7 @@ function Header() {
                                         Login <i className="fas fa-sign-in-alt"></i>
                                     </Link>
                                 </>)}
-                            </li>
+                            {/* </li> */}
                         </ul>
                     </div>
                 </div>

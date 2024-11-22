@@ -116,20 +116,22 @@ function Dashboard() {
                                     <div className="row">
                                         {posts?.slice(0, 3)?.map((p, index) => (
                                             <>
-                                                <div className="col-12">
+                                                <div className="col-12" key={p?.id}>
                                                     <div className="d-flex position-relative">
                                                         <img className="w-60 rounded" src={p?.image} style={{ width: "100px", height: "110px", objectFit: "cover", borderRadius: "10px" }} alt="product" />
-                                                        <div className="ms-3">
-                                                            <a href="#" className="h6 stretched-link text-decoration-none text-dark">
-                                                                {p?.title}
-                                                            </a>
-                                                            <p className="small mb-0 mt-3">
-                                                                <i className="fas fa-calendar me-2"></i>{moment(p?.date).format("DD MMM, YYYY")}
-                                                            </p>
-                                                            <p className="small mb-0">
-                                                                <i className="fas fa-eye me-2"></i>{p?.view} Views
-                                                            </p>
-                                                        </div>
+                                                            <div className="ms-3">
+                                                                <Link to={`/${p.slug}/`} className="text-decoration-none">
+                                                                    <a href="#" className="h6 stretched-link text-decoration-none text-dark">
+                                                                        {p?.title}
+                                                                    </a>
+                                                                </Link>
+                                                                <p className="small mb-0 mt-3">
+                                                                    <i className="fas fa-calendar me-2"></i>{moment(p?.date).format("DD MMM, YYYY")}
+                                                                </p>
+                                                                <p className="small mb-0">
+                                                                    <i className="fas fa-eye me-2"></i>{p?.view} Views
+                                                                </p>
+                                                            </div>
                                                     </div>
                                                 </div>
                                                 <hr className="my-3" />
@@ -328,11 +330,13 @@ function Dashboard() {
                                                 {posts?.map((p, index) => (
                                                     <tr key={index}>
                                                         <td>
-                                                            <h6 className="mt-2 mt-md-0 mb-0 ">
-                                                                <a href="#" className="text-dark text-decoration-none">
-                                                                    {p?.title}
-                                                                </a>
-                                                            </h6>
+                                                            <Link to={`/${p?.slug}/`} className="text-decoration-none">
+                                                                <h6 className="mt-2 mt-md-0 mb-0 ">
+                                                                    <a href="#" className="text-dark text-decoration-none">
+                                                                        {p?.title}
+                                                                    </a>
+                                                                </h6>
+                                                            </Link>
                                                         </td>
                                                         <td>
                                                             <h6 className="mb-0">

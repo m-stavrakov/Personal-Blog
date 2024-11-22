@@ -291,20 +291,35 @@ class DashboardPostCreateAPIView(generics.CreateAPIView):
         category_id = request.data.get("category")
         post_status = request.data.get("post_status")
 
-        user = api_models.User.objects.get(id=user_id)
-        category = api_models.Category.objects.get(id=category_id)
+        try: 
+            user = api_models.User.objects.get(id=user_id)
+            profile = api_models.Profile.objects.get(user=user)
 
-        api_models.Post.objects.create(
-            user=user,
-            title=title,
-            image=image,
-            description=description,
-            tags=tags,
-            category=category,
-            post_status=post_status,
-        )
+            category = api_models.Category.objects.get(id=category_id)
 
-        return Response({"message": "Post created successfully"}, status=status.HTTP_201_CREATED)
+            post = api_models.Post.objects.create(
+                user=user,
+                profile=profile,  # Automatically link the profile
+                title=title,
+                image=image,
+                description=description,
+                tags=tags,
+                category=category,
+                status=post_status,
+            )
+
+            return Response(
+                {"message": "Post created successfully", "post_id": post.id},
+                status=status.HTTP_201_CREATED,
+            )
+        except api_models.User.DoesNotExist:
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+        except api_models.Profile.DoesNotExist:
+            return Response({"error": "Profile not found for the user"}, status=status.HTTP_404_NOT_FOUND)
+        except api_models.Category.DoesNotExist:
+            return Response({"error": "Category not found"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
     
 class DashboardPostEditAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = api_serializer.PostSerializer

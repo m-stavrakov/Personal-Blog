@@ -126,11 +126,13 @@ function Posts() {
                                                 {posts?.map((p, index) => (
                                                     <tr key={index}>
                                                         <td>
-                                                            <h6 className="mt-2 mt-md-0 mb-0 ">
-                                                                <a href="#" className="text-dark text-decoration-none">
-                                                                    {p?.title}
-                                                                </a>
-                                                            </h6>
+                                                            <Link to={`/${p.slug}/`} className="text-decoration-none">
+                                                                <h6 className="mt-2 mt-md-0 mb-0 ">
+                                                                    <a href="#" className="text-dark text-decoration-none">
+                                                                        {p?.title}
+                                                                    </a>
+                                                                </h6>
+                                                            </Link>
                                                         </td>
                                                         <td>
                                                             <h6 className="mb-0">

@@ -1,9 +1,150 @@
 import React from "react";
 import Header from "../partials/Header";
 import Footer from "../partials/Footer";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import apiInstance from "../../utils/axios";
+import useUserData from "../../plugin/useUserData";
+import Toast from "../../plugin/Toast";
+import Swal from "sweetalert2";
+import { useState } from "react";
+import { useEffect } from "react";
 
 function AddPost() {
+
+    // because we will be sending category id we need to convert it to an integer for the backend 
+    const [post, setCreatePost] = useState({image: "", title: "", description: "", category: parseInt(""), tags: "", status: ""});
+    const [imagePreview, setImagePreview] = useState("");
+    // to create a select for category
+    const [categoryList, setCategoryList] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+
+    // added
+    const [posts, setPosts] = useState([]);
+    // end
+
+    const userId = useUserData()?.user_id;
+    const [profile, setProfile] = useState(null);
+    const navigate = useNavigate();
+
+    const fetchCategory = async () => {
+        try {
+            const response = await apiInstance.get(`post/category/list/`);
+            console.log(response.data);
+            setCategoryList(response.data);
+        } catch (error) {
+            console.log(error);
+        };
+    };
+
+    // useEffect(() => {
+    //     fetchCategory();
+    // }, []);
+
+    // added
+    const fetchPosts = async () => {
+        try {
+            const response = await apiInstance.get('post/list/');
+            setPosts(response.data);
+        } catch (error) {
+            console.log("Error fetching posts:", error);
+        }
+    };
+    // end
+
+    const fetchProfile = async () => {
+        try {
+            const response = await apiInstance.get(`user/profile/${userId}/`);
+            setProfile(response.data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    useEffect(() => {
+        fetchPosts();
+        fetchCategory();
+        if (userId) {
+            fetchProfile();
+        }
+    }, [userId]);
+
+    // when we start writing things in the input
+    const handleCreatePostChange = (event) => {
+        setCreatePost({
+            ...post,
+            [event.target.name]: event.target.value,
+        });
+    };
+
+    const handleFileChange = (event) => {
+        const selectedFile = event.target.files[0];
+        const reader = new FileReader();
+
+        setCreatePost({
+            ...post,
+            image: {
+                file: event.target.files[0],
+                preview: reader.result,
+            }
+        });
+
+        reader.onloadend = () => {
+            setImagePreview(reader.result)
+        };
+
+        if (selectedFile){
+            reader.readAsDataURL(selectedFile);
+        }
+    };
+
+    const handleCreatePost = async (e) => {
+        e.preventDefault();
+        setIsLoading(true);
+
+        if (!post.title || !post.description || !post.image) {
+            Toast("error", "All fields are required");
+            setIsLoading(false);
+            // empty return so it does not make any calls to the api and just returns the form
+            return;
+        };
+
+        // used to send automatically structured form data to the api
+        // another way to do it is in a dictionary form but this FormData already makes it like that
+        // but because we are dealing with files (image) it is better to use FormData
+        const formdata = new FormData();
+
+        // you structure them in a key value pairs
+        formdata.append("user_id", userId);
+        formdata.append("profile_id", profile?.id)
+        formdata.append("title", post.title);
+        formdata.append("image", post.image.file);
+        formdata.append("description", post.description);
+        formdata.append("category", post.category);
+        formdata.append("tags", post.tags);
+        formdata.append("post_status", post.status);
+
+        try {
+            // when working with images pass headers
+            const response = await apiInstance.post(`author/dashboard/post-create/`, formdata, {
+                headers: {
+                    "content-Type": "multipart/form-data",
+                },
+            });
+            // added
+            fetchPosts();
+            // end
+            console.log(response.data);
+            setIsLoading(false);
+            Swal.fire({
+                icon: "success",
+                title: "Post created successfully",
+            });
+            navigate("/posts/");
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return (
         <>
             <Header />
@@ -35,7 +176,7 @@ function AddPost() {
                                         </div>
                                     </div>
                                 </section>
-                                <section className="pb-8 mt-5">
+                                <form onSubmit={handleCreatePost} className="pb-8 mt-5">
                                     <div className="card mb-3">
                                         {/* Basic Info Section */}
                                         <div className="card-header border-bottom px-4 py-3">
@@ -45,45 +186,62 @@ function AddPost() {
                                             <label htmlFor="postTHumbnail" className="form-label">
                                                 Preview
                                             </label>
-                                            <img style={{ width: "100%", height: "330px", objectFit: "cover", borderRadius: "10px" }} className="mb-4" src="https://www.eclosio.ong/wp-content/uploads/2018/08/default.png" alt="" />
+                                            <img style={{ width: "100%", height: "330px", objectFit: "cover", borderRadius: "10px" }} className="mb-4" src={imagePreview || "https://www.eclosio.ong/wp-content/uploads/2018/08/default.png"} alt="" />
                                             <div className="mb-3">
                                                 <label htmlFor="postTHumbnail" className="form-label">
                                                     Thumbnail
                                                 </label>
-                                                <input id="postTHumbnail" className="form-control" type="file" />
+                                                {/* for the images in order to work the name of the input must be file */}
+                                                <input onChange={handleFileChange} id="postTHumbnail" name="file" className="form-control" type="file" />
                                             </div>
 
                                             <div className="mb-3">
                                                 <label className="form-label">Title</label>
-                                                <input className="form-control" type="text" placeholder="" />
+                                                <input onChange={handleCreatePostChange} name="title" className="form-control" type="text" placeholder="" />
                                                 <small>Write a 60 character post title.</small>
                                             </div>
                                             <div className="mb-3">
                                                 <label className="form-label">Posts category</label>
-                                                <select className="form-select">
+                                                <select className="form-select" onChange={handleCreatePostChange} name="category">
                                                     <option value="">-------------</option>
-                                                    <option value="React">Lifstyle</option>
-                                                    <option value="Javascript">Fashion</option>
-                                                    <option value="HTML">Tech</option>
-                                                    <option value="Vue">Health</option>
-                                                    <option value="Gulp">Entertainment</option>
+                                                    {categoryList.map((c, index) => (
+                                                        <option key={index} value={c?.id}>{c?.title}</option>
+                                                    ))}
                                                 </select>
                                                 <small>Help people find your posts by choosing categories that represent your post.</small>
                                             </div>
 
                                             <div className="mb-3">
                                                 <label className="form-label">Post Description</label>
-                                                <textarea name="" className="form-control" id="" cols="30" rows="10"></textarea>
+                                                <textarea name="description" onChange={handleCreatePostChange} className="form-control" id="" cols="30" rows="10"></textarea>
                                                 <small>A brief summary of your posts.</small>
                                             </div>
+
+                                            <div className="mb-3">
+                                                <label className="form-label">Status</label>
+                                                <select name="status" onChange={handleCreatePostChange} className="form-select" id="">
+                                                    <option value="Active">Active</option>
+                                                    <option value="Draft">Draft</option>
+                                                    <option value="Disabled">Disabled</option>
+                                                </select>
+                                            </div>
+
                                             <label className="form-label">Tag</label>
-                                            <input className="form-control" type="number" placeholder="health, medicine, fitness" />
+                                            <input onChange={handleCreatePostChange} name="tags" className="form-control" type="text" placeholder="health, medicine, fitness" />
                                         </div>
                                     </div>
-                                    <button className="btn btn-lg btn-success w-100 mt-2" type="button">
-                                        Create Post <i className="fas fa-check-circle"></i>
-                                    </button>
-                                </section>
+                                    {isLoading === true ? (
+                                    <>
+                                        <button disabled className="btn btn-lg btn-secondary w-100 mt-2" type="submit">
+                                        Creating Post... <i className="fas fa-spinner fa-spin"></i>
+                                        </button>
+                                    </>) : (
+                                    <>
+                                        <button className="btn btn-lg btn-success w-100 mt-2" type="submit">
+                                            Create Post <i className="fas fa-check-circle"></i>
+                                        </button>
+                                    </>)} 
+                                </form>
                             </>
                         </div>
                     </div>

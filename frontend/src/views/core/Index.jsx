@@ -113,8 +113,8 @@ function Index() {
                             </li>
                         </ul>
                         <ul className="pagination">
-                            {pageNumbers?.map((number) => (
-                                <li key={1} className={`page-item ${currentPage === number ? "active" : ""}`}>
+                            {pageNumbers?.map((number, index) => (
+                                <li key={index} className={`page-item ${currentPage === number ? "active" : ""}`}>
                                     <button className="page-link text-dark fw-bold rounded"
                                             onClick={() => setCurrentPage(number)}
                                     >

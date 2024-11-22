@@ -118,6 +118,7 @@ function Detail() {
                                     </div>
                                     <a href="#" className="h5 fw-bold text-dark text-decoration-none mt-2 mb-0 d-block">
                                         {post?.profile?.full_name}
+                                        {/* {post?.user?.profile?.full_name} */}
                                     </a>
                                     <p>{post?.profile?.about || ''}</p>
                                 </div>
