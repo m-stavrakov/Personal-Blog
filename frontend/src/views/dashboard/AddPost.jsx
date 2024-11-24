@@ -43,7 +43,9 @@ function AddPost() {
     // added
     const fetchPosts = async () => {
         try {
-            const response = await apiInstance.get('post/list/');
+            // const response = await apiInstance.get('post/list/');
+            const response = await apiInstance.get(`author/dashboard/post-list/${userId}/`);
+            console.log(response.data)
             setPosts(response.data);
         } catch (error) {
             console.log("Error fetching posts:", error);
@@ -108,6 +110,19 @@ function AddPost() {
             return;
         };
 
+        // added
+        const jsonData = {
+            user_id: userId,
+            profile_id: profile?.id,
+            title: post.title,
+            image: post.image.file,
+            description: post.description,
+            tags: post.tags,
+            category: post.category,
+            post_status: post.status,
+        };
+        // end added
+
         // used to send automatically structured form data to the api
         // another way to do it is in a dictionary form but this FormData already makes it like that
         // but because we are dealing with files (image) it is better to use FormData
@@ -134,6 +149,7 @@ function AddPost() {
             fetchPosts();
             // end
             console.log(response.data);
+            console.log("Post created");
             setIsLoading(false);
             Swal.fire({
                 icon: "success",
@@ -141,7 +157,8 @@ function AddPost() {
             });
             navigate("/posts/");
         } catch (error) {
-            console.log(error);
+            console.log("Creating post error: ", error);
+            setIsLoading(false);
         }
     }
 

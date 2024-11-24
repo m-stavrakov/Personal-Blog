@@ -308,6 +308,8 @@ class DashboardPostCreateAPIView(generics.CreateAPIView):
                 status=post_status,
             )
 
+            print("Post created:", post)
+
             return Response(
                 {"message": "Post created successfully", "post_id": post.id},
                 status=status.HTTP_201_CREATED,
@@ -319,6 +321,7 @@ class DashboardPostCreateAPIView(generics.CreateAPIView):
         except api_models.Category.DoesNotExist:
             return Response({"error": "Category not found"}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
+            print("Error during post creation:", e)
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
     
 class DashboardPostEditAPIView(generics.RetrieveUpdateDestroyAPIView):
